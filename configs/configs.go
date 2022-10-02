@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 	"sync"
 	"time"
 
@@ -90,20 +91,13 @@ func createLogger() *logrus.Logger {
 }
 
 func createDBConnection() *sql.DB {
-	// TODO: change
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s",
-		// os.Getenv("MYSQL_DB_USER"),
-		// os.Getenv("MYSQL_DB_PASS"),
-		// os.Getenv("MYSQL_DB_HOST"),
-		// os.Getenv("MYSQL_DB_PORT"),
-		// os.Getenv("MYSQL_DB_NAME"),
-
-		"user",
-		"password",
-		"localhost",
-		"3306",
-		"cake_store",
+		os.Getenv("MYSQL_DB_USER"),
+		os.Getenv("MYSQL_DB_PASS"),
+		os.Getenv("MYSQL_DB_HOST"),
+		os.Getenv("MYSQL_DB_PORT"),
+		os.Getenv("MYSQL_DB_NAME"),
 	)
 
 	retryCount := 0

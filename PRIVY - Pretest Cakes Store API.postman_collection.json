@@ -1,0 +1,157 @@
+{
+	"info": {
+		"_postman_id": "8c9b7679-d3f6-455a-89f2-4cda113763e1",
+		"name": "PRIVY - Pretest Cakes Store API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "380150"
+	},
+	"item": [
+		{
+			"name": "Cakes",
+			"item": [
+				{
+					"name": "List Of Cakes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/cakes?limit=5&page=1&s=cheese&rating_min=5&rating_max=7&sort_by=rating.desc,title.asc",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cakes"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "s",
+									"value": "cheese"
+								},
+								{
+									"key": "rating_min",
+									"value": "5"
+								},
+								{
+									"key": "rating_max",
+									"value": "7"
+								},
+								{
+									"key": "sort_by",
+									"value": "rating.desc,title.asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Detail Of Cake",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/cakes/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cakes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add New Cake",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Lemon cheesecake\",\n    \"description\": \"A cheesecake made of lemon\",\n    \"rating\": 7.5,\n    \"image\": \"https://img.taste.com.au/ynYrqkOs/w720-h480-cfill-q80/taste/2016/11/sunny-lemon-cheesecake-102220-1.jpeg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/cakes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cakes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Cake",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"rating\": 1.5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/cakes/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cakes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete cake",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/cakes/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cakes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

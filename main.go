@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"os"
 
 	"github.com/adhiana46/cake-store-restfulapi/api/v1/cake"
 	"github.com/adhiana46/cake-store-restfulapi/configs"
@@ -28,11 +29,8 @@ func main() {
 	api := r.Group("/api/v1")
 	cake.RegisterHandler(api)
 
-	// TODO: change
-	// appHost := os.Getenv("APP_HOST")
-	// appPort := os.Getenv("APP_PORT")
-	appHost := "0.0.0.0"
-	appPort := "8000"
+	appHost := os.Getenv("APP_HOST")
+	appPort := os.Getenv("APP_PORT")
 
 	app.Logger.Infof("Server running on %s at port %s\n", appHost, appPort)
 	if err := r.Listen(fmt.Sprintf("%s:%s", appHost, appPort)); err != nil {
