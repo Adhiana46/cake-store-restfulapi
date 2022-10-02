@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/adhiana46/cake-store-restfulapi/configs"
 	"github.com/adhiana46/cake-store-restfulapi/constants"
 	"github.com/adhiana46/cake-store-restfulapi/internal/entities"
 	"github.com/adhiana46/cake-store-restfulapi/internal/utils"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -58,13 +58,13 @@ func (r *cakeRepositoryMysql) GetAll(limit int, skip int, wheres []utils.SqlWher
 	var totalRows int
 	err := countRow.Scan(&totalRows)
 	if err != nil && err != sql.ErrNoRows {
-		configs.GetInstance().Logger.Errorf("repository.cakeRepositoryMysql.GetAll: %s", err)
+		logrus.Errorf("repository.cakeRepositoryMysql.GetAll: %s", err)
 		return nil, 0, err
 	}
 
 	rows, err := r.db.Query(fmt.Sprintf(sql_cake_select_all, sWheres, sOrders, sLimit))
 	if err != nil {
-		configs.GetInstance().Logger.Errorf("repository.cakeRepositoryMysql.GetAll: %s", err)
+		logrus.Errorf("repository.cakeRepositoryMysql.GetAll: %s", err)
 		return nil, 0, err
 	}
 	defer rows.Close()
@@ -84,16 +84,16 @@ func (r *cakeRepositoryMysql) GetAll(limit int, skip int, wheres []utils.SqlWher
 		)
 
 		if err != nil {
-			configs.GetInstance().Logger.Errorf("repository.cakeRepositoryMysql.GetAll: %s", err)
+			logrus.Errorf("repository.cakeRepositoryMysql.GetAll: %s", err)
 			return nil, 0, err
 		}
 
 		if cake.CreatedAt, err = time.Parse(constants.DEFAULT_DATETIME_LAYOUT, createdAt); err != nil {
-			configs.GetInstance().Logger.Errorf("repository.cakeRepositoryMysql.GetAll: %s", err)
+			logrus.Errorf("repository.cakeRepositoryMysql.GetAll: %s", err)
 			return nil, 0, nil
 		}
 		if cake.UpdatedAt, err = time.Parse(constants.DEFAULT_DATETIME_LAYOUT, updatedAt); err != nil {
-			configs.GetInstance().Logger.Errorf("repository.cakeRepositoryMysql.GetAll: %s", err)
+			logrus.Errorf("repository.cakeRepositoryMysql.GetAll: %s", err)
 			return nil, 0, nil
 		}
 
@@ -118,17 +118,17 @@ func (r *cakeRepositoryMysql) GetById(id int) (*entities.Cake, error) {
 	)
 
 	if err != nil && err != sql.ErrNoRows {
-		configs.GetInstance().Logger.Errorf("repository.cakeRepositoryMysql.GetById: %s", err)
+		logrus.Errorf("repository.cakeRepositoryMysql.GetById: %s", err)
 		return cake, err
 	}
 
 	if err == nil && cake.ID != 0 {
 		if cake.CreatedAt, err = time.Parse(constants.DEFAULT_DATETIME_LAYOUT, createdAt); err != nil {
-			configs.GetInstance().Logger.Errorf("repository.cakeRepositoryMysql.GetById: %s", err)
+			logrus.Errorf("repository.cakeRepositoryMysql.GetById: %s", err)
 			return cake, err
 		}
 		if cake.UpdatedAt, err = time.Parse(constants.DEFAULT_DATETIME_LAYOUT, updatedAt); err != nil {
-			configs.GetInstance().Logger.Errorf("repository.cakeRepositoryMysql.GetById: %s", err)
+			logrus.Errorf("repository.cakeRepositoryMysql.GetById: %s", err)
 			return cake, err
 		}
 	}
@@ -139,13 +139,13 @@ func (r *cakeRepositoryMysql) GetById(id int) (*entities.Cake, error) {
 func (r *cakeRepositoryMysql) Store(cake *entities.Cake) (*entities.Cake, error) {
 	res, err := r.db.Exec(sql_cake_create, cake.Title, cake.Description, cake.Rating, cake.Image)
 	if err != nil {
-		configs.GetInstance().Logger.Errorf("repository.cakeRepositoryMysql.Store: %s", err)
+		logrus.Errorf("repository.cakeRepositoryMysql.Store: %s", err)
 		return nil, err
 	}
 
 	id, err := res.LastInsertId()
 	if err != nil {
-		configs.GetInstance().Logger.Errorf("repository.cakeRepositoryMysql.Store: %s", err)
+		logrus.Errorf("repository.cakeRepositoryMysql.Store: %s", err)
 		return nil, err
 	}
 
@@ -155,7 +155,7 @@ func (r *cakeRepositoryMysql) Store(cake *entities.Cake) (*entities.Cake, error)
 func (r *cakeRepositoryMysql) Update(cake *entities.Cake) (*entities.Cake, error) {
 	_, err := r.db.Exec(sql_cake_update, cake.Title, cake.Description, cake.Rating, cake.Image, cake.ID)
 	if err != nil {
-		configs.GetInstance().Logger.Errorf("repository.cakeRepositoryMysql.Update: %s", err)
+		logrus.Errorf("repository.cakeRepositoryMysql.Update: %s", err)
 		return nil, err
 	}
 
@@ -165,7 +165,7 @@ func (r *cakeRepositoryMysql) Update(cake *entities.Cake) (*entities.Cake, error
 func (r *cakeRepositoryMysql) Delete(cake *entities.Cake) (bool, error) {
 	_, err := r.db.Exec(sql_cake_delete, cake.ID)
 	if err != nil {
-		configs.GetInstance().Logger.Errorf("repository.cakeRepositoryMysql.Delete: %s", err)
+		logrus.Errorf("repository.cakeRepositoryMysql.Delete: %s", err)
 		return false, err
 	}
 
