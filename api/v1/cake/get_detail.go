@@ -19,10 +19,14 @@ func getCakeDetailHandler(service service.CakeService) func(c *fiber.Ctx) error 
 			ID: reqId,
 		}
 
-		responseData, httpcode, err := service.GetById(req)
+		responseData, httpcode, validationErrs, err := service.GetById(req)
 		if err != nil {
 			configs.GetInstance().Logger.Errorf("%s: %s", c.Request().URI().String(), err)
 			return c.Status(httpcode).JSON(utils.JsonError(httpcode, nil))
+		}
+
+		if validationErrs != nil {
+			return c.Status(httpcode).JSON(utils.JsonError(httpcode, validationErrs))
 		}
 
 		return c.Status(httpcode).JSON(utils.JsonSuccess(httpcode, responseData))

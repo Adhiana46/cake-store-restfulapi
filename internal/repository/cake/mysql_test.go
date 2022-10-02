@@ -65,9 +65,9 @@ func TestCakeRepositoryMysql_GetAll(t *testing.T) {
 
 	repo := NewCakeRepositoryMysql(db)
 
-	mock.ExpectQuery(fmt.Sprintf(sql_cake_select_all_count, sWheres))
+	mock.ExpectQuery(fmt.Sprintf(SQL_CAKE_SELECT_ALL_COUNT, sWheres))
 
-	mock.ExpectQuery(sql_cake_select_all).
+	mock.ExpectQuery(SQL_CAKE_SELECT_ALL).
 		WithArgs(sWheres, sOrders, sLimits).
 		WillReturnRows(rs)
 
@@ -97,7 +97,7 @@ func TestCakeRepositoryMysql_GetById(t *testing.T) {
 
 	repo := NewCakeRepositoryMysql(db)
 
-	mock.ExpectQuery(sql_cake_select_by_id).
+	mock.ExpectQuery(SQL_CAKE_SELECT_BY_ID).
 		WithArgs(1).
 		WillReturnRows(rs)
 
@@ -138,7 +138,7 @@ func TestCakeRepositoryMysql_Store(t *testing.T) {
 		WithArgs(cake.Title, cake.Description, cake.Rating, cake.Image).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	mock.ExpectQuery(sql_cake_select_by_id).
+	mock.ExpectQuery(SQL_CAKE_SELECT_BY_ID).
 		WithArgs(1).
 		WillReturnRows(rs)
 
@@ -180,7 +180,7 @@ func TestCakeRepositoryMysql_Update(t *testing.T) {
 		WithArgs(cake.Title, cake.Description, cake.Rating, cake.Image, cake.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	mock.ExpectQuery(sql_cake_select_by_id).
+	mock.ExpectQuery(SQL_CAKE_SELECT_BY_ID).
 		WithArgs(cake.ID).
 		WillReturnRows(rs)
 

@@ -1,7 +1,7 @@
 package requests
 
 type GetCakeRequest struct {
-	ID int `uri:"id" binding:"required"`
+	ID int `uri:"id" binding:"required" validate:"required,numeric"`
 }
 
 // /cakes?limit=10&page=1&s=bla bla&rating_min=2.5&rating_max=4.5&sort_by=rating.desc,title.asc
@@ -22,7 +22,7 @@ type CreateCakeRequest struct {
 }
 
 type UpdateCakeRequest struct {
-	ID          int      `uri:"id" binding:"required"`
+	ID          int      `uri:"id" binding:"required" validate:"required,numeric"`
 	Title       *string  `json:"title" validate:"omitempty,min=3,max=100"`
 	Description *string  `json:"description" validate:"omitempty,max=255"`
 	Rating      *float32 `json:"rating" validate:"omitempty,numeric,gte=0,lte=10"`
@@ -30,5 +30,5 @@ type UpdateCakeRequest struct {
 }
 
 type DeleteCakeRequest struct {
-	ID int `uri:"id" binding:"required"`
+	ID int `uri:"id" binding:"required" validate:"required,numeric"`
 }

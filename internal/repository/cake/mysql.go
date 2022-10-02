@@ -13,12 +13,12 @@ import (
 )
 
 const (
-	sql_cake_select_all       = "SELECT id, title, description, rating, image, created_at, updated_at FROM cakes %s %s %s" // replace ? with where,order,limit, dll
-	sql_cake_select_all_count = "SELECT COUNT(id) AS numrows FROM cakes %s"
-	sql_cake_select_by_id     = "SELECT id, title, description, rating, image, created_at, updated_at FROM cakes WHERE id = ?"
-	sql_cake_create           = "INSERT INTO cakes(title, description, rating, image) VALUES(?, ?, ?, ?)"
-	sql_cake_update           = "UPDATE cakes SET title=?, description=?, rating=?, image=? WHERE id = ?"
-	sql_cake_delete           = "DELETE FROM cakes WHERE id = ?"
+	SQL_CAKE_SELECT_ALL       = "SELECT id, title, description, rating, image, created_at, updated_at FROM cakes %s %s %s" // replace ? with where,order,limit, dll
+	SQL_CAKE_SELECT_ALL_COUNT = "SELECT COUNT(id) AS numrows FROM cakes %s"
+	SQL_CAKE_SELECT_BY_ID     = "SELECT id, title, description, rating, image, created_at, updated_at FROM cakes WHERE id = ?"
+	SQL_CAKE_CREATE           = "INSERT INTO cakes(title, description, rating, image) VALUES(?, ?, ?, ?)"
+	SQL_CAKE_UPDATE           = "UPDATE cakes SET title=?, description=?, rating=?, image=? WHERE id = ?"
+	SQL_CAKE_DELETE           = "DELETE FROM cakes WHERE id = ?"
 )
 
 type cakeRepositoryMysql struct {
@@ -54,7 +54,7 @@ func (r *cakeRepositoryMysql) GetAll(limit int, skip int, wheres []utils.SqlWher
 
 	fmt.Println(sWheres)
 
-	countRow := r.db.QueryRow(fmt.Sprintf(sql_cake_select_all_count, sWheres))
+	countRow := r.db.QueryRow(fmt.Sprintf(SQL_CAKE_SELECT_ALL_COUNT, sWheres))
 	var totalRows int
 	err := countRow.Scan(&totalRows)
 	if err != nil && err != sql.ErrNoRows {
@@ -62,7 +62,7 @@ func (r *cakeRepositoryMysql) GetAll(limit int, skip int, wheres []utils.SqlWher
 		return nil, 0, err
 	}
 
-	rows, err := r.db.Query(fmt.Sprintf(sql_cake_select_all, sWheres, sOrders, sLimit))
+	rows, err := r.db.Query(fmt.Sprintf(SQL_CAKE_SELECT_ALL, sWheres, sOrders, sLimit))
 	if err != nil {
 		logrus.Errorf("repository.cakeRepositoryMysql.GetAll: %s", err)
 		return nil, 0, err
@@ -105,7 +105,7 @@ func (r *cakeRepositoryMysql) GetAll(limit int, skip int, wheres []utils.SqlWher
 
 func (r *cakeRepositoryMysql) GetById(id int) (*entities.Cake, error) {
 	cake := &entities.Cake{}
-	row := r.db.QueryRow(sql_cake_select_by_id, id)
+	row := r.db.QueryRow(SQL_CAKE_SELECT_BY_ID, id)
 	var createdAt, updatedAt string
 	err := row.Scan(
 		&cake.ID,
@@ -137,7 +137,7 @@ func (r *cakeRepositoryMysql) GetById(id int) (*entities.Cake, error) {
 }
 
 func (r *cakeRepositoryMysql) Store(cake *entities.Cake) (*entities.Cake, error) {
-	res, err := r.db.Exec(sql_cake_create, cake.Title, cake.Description, cake.Rating, cake.Image)
+	res, err := r.db.Exec(SQL_CAKE_CREATE, cake.Title, cake.Description, cake.Rating, cake.Image)
 	if err != nil {
 		logrus.Errorf("repository.cakeRepositoryMysql.Store: %s", err)
 		return nil, err
@@ -153,7 +153,7 @@ func (r *cakeRepositoryMysql) Store(cake *entities.Cake) (*entities.Cake, error)
 }
 
 func (r *cakeRepositoryMysql) Update(cake *entities.Cake) (*entities.Cake, error) {
-	_, err := r.db.Exec(sql_cake_update, cake.Title, cake.Description, cake.Rating, cake.Image, cake.ID)
+	_, err := r.db.Exec(SQL_CAKE_UPDATE, cake.Title, cake.Description, cake.Rating, cake.Image, cake.ID)
 	if err != nil {
 		logrus.Errorf("repository.cakeRepositoryMysql.Update: %s", err)
 		return nil, err
@@ -163,7 +163,7 @@ func (r *cakeRepositoryMysql) Update(cake *entities.Cake) (*entities.Cake, error
 }
 
 func (r *cakeRepositoryMysql) Delete(cake *entities.Cake) (bool, error) {
-	_, err := r.db.Exec(sql_cake_delete, cake.ID)
+	_, err := r.db.Exec(SQL_CAKE_DELETE, cake.ID)
 	if err != nil {
 		logrus.Errorf("repository.cakeRepositoryMysql.Delete: %s", err)
 		return false, err

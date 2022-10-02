@@ -19,10 +19,14 @@ func deleteCakeHandler(service service.CakeService) func(c *fiber.Ctx) error {
 			ID: reqId,
 		}
 
-		_, httpcode, err := service.Delete(req)
+		_, httpcode, validationErrs, err := service.Delete(req)
 		if err != nil {
 			configs.GetInstance().Logger.Errorf("%s: %s", c.Request().URI().String(), err)
 			return c.Status(httpcode).JSON(utils.JsonError(httpcode, nil))
+		}
+
+		if validationErrs != nil {
+			return c.Status(httpcode).JSON(utils.JsonError(httpcode, validationErrs))
 		}
 
 		return c.Status(httpcode).JSON(utils.JsonSuccess(httpcode, nil))

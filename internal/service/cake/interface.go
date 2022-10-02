@@ -7,9 +7,9 @@ import (
 )
 
 type CakeService interface {
-	GetAll(req requests.GetCakeListRequest) ([]*responses.CakeResponse, *utils.ResponsePagination, int, error)
-	GetById(req requests.GetCakeRequest) (*responses.CakeResponse, int, error)
-	Create(req requests.CreateCakeRequest) (*responses.CakeResponse, int, error)
-	Update(req requests.UpdateCakeRequest) (*responses.CakeResponse, int, error)
-	Delete(req requests.DeleteCakeRequest) (bool, int, error)
+	GetAll(req requests.GetCakeListRequest) ([]*responses.CakeResponse, *utils.ResponsePagination, int, map[string][]string, error)
+	GetById(req requests.GetCakeRequest) (*responses.CakeResponse, int, map[string][]string, error)
+	Create(req requests.CreateCakeRequest) (*responses.CakeResponse, int, map[string][]string, error)
+	Update(req requests.UpdateCakeRequest) (*responses.CakeResponse, int, map[string][]string, error)
+	Delete(req requests.DeleteCakeRequest) (bool, int, map[string][]string, error)
 }

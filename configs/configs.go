@@ -16,9 +16,8 @@ import (
 )
 
 type Configs struct {
-	Logger    *logrus.Logger
-	DB        *sql.DB
-	Validator *Validator
+	Logger *logrus.Logger
+	DB     *sql.DB
 }
 
 type Validator struct {
@@ -33,20 +32,32 @@ func (c *Configs) Close() {
 var instance *Configs
 var lock *sync.Mutex = &sync.Mutex{}
 
+var validatorInstance *Validator
+var validatorLock *sync.Mutex = &sync.Mutex{}
+
 func GetInstance() *Configs {
 	lock.Lock()
 	defer lock.Unlock()
 
 	if instance == nil {
 		instance = &Configs{
-			Logger:    createLogger(),
-			DB:        createDBConnection(),
-			Validator: createValidator(),
+			Logger: createLogger(),
+			DB:     createDBConnection(),
 		}
 	}
 
 	return instance
+}
 
+func GetValidatorInstance() *Validator {
+	validatorLock.Lock()
+	defer validatorLock.Unlock()
+
+	if validatorInstance == nil {
+		validatorInstance = createValidator()
+	}
+
+	return validatorInstance
 }
 
 func createValidator() *Validator {
