@@ -173,12 +173,12 @@ Controller -> Service -> Repository
 
 ## Running App (Linux)
 ```sh
-docker compose up app -d
+docker compose up -d app
 ```
 
 ## Running App (Windows)
 ```sh
-docker-compose up app -d
+docker-compose up -d app
 ```
 
 <p align="left">
