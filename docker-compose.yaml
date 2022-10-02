@@ -1,0 +1,45 @@
+version: '3.9'
+services:
+  app:
+    container_name: app
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8000:80"
+    environment:
+      APP_HOST: 0.0.0.0
+      APP_PORT: 80
+      MYSQL_DB_HOST: db
+      MYSQL_DB_PORT: 3306
+      MYSQL_DB_USER: user
+      MYSQL_DB_PASS: password
+      MYSQL_DB_NAME: cake_store
+    depends_on:
+      - db
+  db:
+    container_name: db
+    image: 'mysql:8.0.30'
+    ports:
+      - 3306:3306
+    restart: always
+    environment:
+      MYSQL_DATABASE: cake_store
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: r00t2022
+    volumes:
+      # - ./data/sql/initdb.sql:/docker-entrypoint-initdb.d/db.sql
+      - cake_store_db:/var/lib/mysql
+  migrate:
+    container_name: migrate
+    image: migrate/migrate
+    volumes:
+      - ./database/migrations:/migrations
+    entrypoint: [ "migrate", "-path", "/migrations", "-database",  "mysql://user:password@tcp(db:3306)/cake_store" ]
+    depends_on:
+      - db
+
+volumes:
+  cake_store_db:
