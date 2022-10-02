@@ -29,10 +29,11 @@ func CakeToResponse(e *entities.Cake) *CakeResponse {
 	return r
 }
 
-func CakeToResponseList(eArr []*entities.Cake) (responses []*CakeResponse) {
+func CakeToResponseList(eArr []*entities.Cake) []*CakeResponse {
+	responses := []*CakeResponse{}
 	for _, e := range eArr {
 		responses = append(responses, CakeToResponse(e))
 	}
 
-	return
+	return responses
 }
