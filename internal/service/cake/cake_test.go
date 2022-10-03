@@ -14,6 +14,66 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestGetAll_ValidationError(t *testing.T) {
+	db, _, err := sqlmock.New()
+	if err != nil {
+		t.Errorf("An error '%s' was not expected when creating mock db", err)
+	}
+
+	repo := repository.NewCakeRepositoryMysql(db)
+	service := NewCakeService(repo)
+
+	req := requests.GetCakeListRequest{}
+	limit := 128 // max 100
+	page := 0    // min 1
+	s := "Ullamco excepteur nisi sint incididunt Lorem ea. Ullamco excepteur nisi sint incididunt Lorem ea. Ullamco excepteur nisi sint incididunt Lorem ea."
+	ratingMin := float32(-1)
+	ratingMax := float32(100)
+
+	req.Limit = &limit
+	req.Page = &page
+	req.S = &s
+	req.RatingMin = &ratingMin
+	req.RatingMax = &ratingMax
+
+	response, pagination, httpcode, validationErrs, err := service.GetAll(req)
+
+	assert.Nil(t, response)
+	assert.Nil(t, pagination)
+	assert.Equal(t, http.StatusBadRequest, httpcode)
+	assert.NotNil(t, validationErrs)
+	assert.Nil(t, err)
+
+	assert.Contains(t, validationErrs, "limit")
+	assert.Contains(t, validationErrs, "page")
+	assert.Contains(t, validationErrs, "s")
+	assert.Contains(t, validationErrs, "rating_min")
+	assert.Contains(t, validationErrs, "rating_max")
+}
+
+func TestGetAll_ValidationErrorInvalidSortBy(t *testing.T) {
+	db, _, err := sqlmock.New()
+	if err != nil {
+		t.Errorf("An error '%s' was not expected when creating mock db", err)
+	}
+
+	repo := repository.NewCakeRepositoryMysql(db)
+	service := NewCakeService(repo)
+
+	req := requests.GetCakeListRequest{}
+	sortby := "invalid_format"
+
+	req.SortBy = &sortby
+
+	response, pagination, httpcode, validationErrs, err := service.GetAll(req)
+
+	assert.Nil(t, response)
+	assert.Nil(t, pagination)
+	assert.Equal(t, http.StatusBadRequest, httpcode)
+	assert.Nil(t, validationErrs)
+	assert.NotNil(t, err)
+}
+
 func TestGetById_Found(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
@@ -324,6 +384,60 @@ func TestUpdate_Success(t *testing.T) {
 	assert.Equal(t, expectedHttpcode, httpcode)
 	assert.Nil(t, validationErrs)
 	assert.Nil(t, err)
+}
+
+func TestUpdate_NotFound(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Errorf("An error '%s' was not expected when creating mock db", err)
+	}
+
+	columns := []string{
+		"id",
+		"title",
+		"description",
+		"rating",
+		"image",
+		"created_at",
+		"updated_at",
+	}
+
+	rs := sqlmock.NewRows(columns)
+
+	createdAt, _ := time.Parse(constants.DEFAULT_DATETIME_LAYOUT, "2022-10-02 20:40:00")
+	updatedAt, _ := time.Parse(constants.DEFAULT_DATETIME_LAYOUT, "2022-10-02 20:40:00")
+
+	cake := &entities.Cake{
+		ID:          1,
+		Title:       "Cheese Cake",
+		Description: "deskripsi",
+		Rating:      7.5,
+		Image:       "https://image.com/cheese.jpg",
+		CreatedAt:   createdAt,
+		UpdatedAt:   updatedAt,
+	}
+
+	repo := repository.NewCakeRepositoryMysql(db)
+	service := NewCakeService(repo)
+
+	mock.ExpectQuery(repository.SQL_CAKE_SELECT_BY_ID).
+		WithArgs(cake.ID).
+		WillReturnRows(rs)
+
+	req := requests.UpdateCakeRequest{
+		ID:          cake.ID,
+		Title:       &cake.Title,
+		Description: &cake.Description,
+		Rating:      &cake.Rating,
+		Image:       &cake.Image,
+	}
+
+	response, httpcode, validationErrs, err := service.Update(req)
+
+	assert.Nil(t, response)
+	assert.Equal(t, http.StatusNotFound, httpcode)
+	assert.Nil(t, validationErrs)
+	assert.NotNil(t, err)
 }
 
 func TestUpdatePartial_Success(t *testing.T) {

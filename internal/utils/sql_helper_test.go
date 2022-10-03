@@ -36,3 +36,13 @@ func TestParseStringToSqlOrder_InvalidFormat(t *testing.T) {
 
 	assert.NotNil(t, err)
 }
+
+func TestParseEmptyStringToSqlOrder(t *testing.T) {
+	rawOrder := ""
+
+	result, err := ParseStringToSqlOrder(rawOrder)
+
+	assert.NotNil(t, err)
+
+	assert.Nil(t, result)
+}

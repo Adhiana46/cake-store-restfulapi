@@ -52,8 +52,6 @@ func (r *cakeRepositoryMysql) GetAll(limit int, skip int, wheres []utils.SqlWher
 
 	sLimit := fmt.Sprintf("LIMIT %v, %v", skip, limit)
 
-	fmt.Println(sWheres)
-
 	countRow := r.db.QueryRow(fmt.Sprintf(SQL_CAKE_SELECT_ALL_COUNT, sWheres))
 	var totalRows int
 	err := countRow.Scan(&totalRows)
