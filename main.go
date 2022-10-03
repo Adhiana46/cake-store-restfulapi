@@ -25,7 +25,7 @@ type Config struct {
 func main() {
 	app := configs.GetInstance()
 
-	newGinApp(app)
+	newFiberApp(app)
 }
 
 func newFiberApp(app *configs.Configs) {
