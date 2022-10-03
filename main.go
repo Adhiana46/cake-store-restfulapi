@@ -9,6 +9,8 @@ import (
 	"github.com/adhiana46/cake-store-restfulapi/configs"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/compress"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -21,6 +23,10 @@ func main() {
 	app := configs.GetInstance()
 
 	r := fiber.New()
+
+	// middlewares
+	r.Use(compress.New())
+	r.Use(cors.New())
 
 	r.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Cake Store API")
